@@ -1,0 +1,14 @@
+[
+    {
+        "state": "WAIT",
+        "details": "Waiting for votes"
+    },
+    {
+        "state": "PRECOMMIT",
+        "details": "Entering PRECOMMIT buffer state"
+    },
+    {
+        "state": "COMMIT",
+        "details": "Executing final COMMIT"
+    }
+]

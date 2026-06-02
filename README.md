@@ -1,69 +1,190 @@
 # 3-Phase Commit (3PC) Simulator: Multi-Resource Reservation
 
-**Team:** Distributed Dynamics  
-**Member:** Đinh Việt Hoàng  
-**Course:** Distributed Database Systems  
-**Project ID:** #34 - Reliability and Commit Protocols  
+**Team:** Distributed Dynamics
+**Member:** Đinh Việt Hoàng
+**Course:** Distributed Database Systems
+**Project ID:** #34 - Reliability and Commit Protocols
 
 ---
 
 ## 📖 Project Overview
 
-The standard 2-Phase Commit (2PC) protocol is inherently blocking. If the Coordinator fails while participants are in the `READY` state, the entire system is paralyzed. 
+The standard 2-Phase Commit (2PC) protocol is inherently blocking. If the Coordinator fails while participants are in the `READY` state, the entire system becomes blocked until recovery occurs.
 
-This project is a Python-based simulator for the **3-Phase Commit (3PC) protocol**, designed to solve this blocking vulnerability. It models a distributed travel reservation ecosystem (Hotel, Flight, Car) coordinating with a Transaction Manager. The system strictly adheres to the theoretical state machines and **Cooperative Termination Protocol** defined in academic literature.
+This project is a Python-based simulator of the **3-Phase Commit (3PC) protocol**, designed to eliminate this blocking vulnerability. It models a distributed travel reservation ecosystem consisting of Hotel, Flight, and Car reservation services coordinated by a Transaction Manager.
 
-![3PC State Machine Diagram](assets/state_machine.png)
-*(Figure 1: State transitions for the Coordinator and Participants in 3PC)*
+The implementation follows the theoretical state machines and Cooperative Termination Protocol described in distributed database literature.
+
+<img width="1187" height="781" alt="Screenshot 2026-06-01 025831" src="https://github.com/user-attachments/assets/574e0c3e-8eae-471c-94de-69969921c2cc" />
+
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## 🛠️ Tech Stack
 
-- **Language:** Python 3.x (Object-Oriented Design)
-- **Concurrency:** `multiprocessing` library to create truly isolated processes for the Coordinator and each Participant.
-- **Network Simulation:** `multiprocessing.Manager().Queue()` for Inter-Process Communication (IPC) to simulate asynchronous network routing, polling, and artificial latency.
-- **Durability:** Write-Ahead Logging (WAL) utilizing local `.json` files to simulate non-volatile physical disk storage.
+### Core Technologies
+
+* **Python 3.x**
+* **Object-Oriented Programming (OOP)**
+* **Multiprocessing** for isolated Coordinator and Participant processes
+* **Inter-Process Communication (IPC)** using `multiprocessing.Queue()`
+* **Write-Ahead Logging (WAL)** using JSON-based persistent logs
+
+---
+
+## 🏗️ Architecture
+
+### Architecture Components
+
+* **Coordinator Process**
+
+  * Acts as the Transaction Manager.
+  * Executes the 3PC protocol phases.
+
+* **Participant Processes**
+
+  * Hotel Service
+  * Flight Service
+  * Car Service
+
+* **Network Layer**
+
+  * Simulated through IPC message queues.
+  * Supports message passing, artificial latency, and network partitions.
+
+* **Persistence Layer**
+
+  * JSON-based WAL logs.
+  * Provides durable state recovery.
+
+
+<img width="879" height="280" alt="image" src="https://github.com/user-attachments/assets/5d7b266e-d7ae-488a-9dc3-ee07a8c9231a" />
+
+
+---
+
+## 📂 Project Structure
+
+
+```text
+3pc-simulator/
+│
+├── core/                  # Core protocol logic
+│   ├── __init__.py        # Python package initializer
+│   ├── coordinator.py     # Transaction Manager implementation
+│   ├── logger.py          # Write-Ahead Logging (WAL) logic
+│   ├── messages.py        # Data Transfer Objects (DTO) for networking
+│   ├── participant.py     # Local Recovery Manager implementation
+│   └── states.py          # Enums for 3PC States (WAIT, READY, PRECOMMIT, etc.)
+│
+├── datasets/              # Simulated database inventories
+│   ├── car_db.json
+│   ├── flight_db.json
+│   └── hotel_db.json
+│
+├── logs/                  # Auto-generated persistent WAL storage
+│   ├── Car_log.json
+│   ├── COORDINATOR_log.json
+│   ├── Flight_log.json
+│   └── Hotel_log.json
+│
+├── init_db.py             # Utility script to initialize/reset datasets
+├── main.py                # Entry point & Interactive Menu for 4 Scenarios
+└── README.md              # Project documentation
+```
 
 ---
 
 ## 🚀 Installation & Usage
 
 ### 1. Prerequisites
-Ensure you have Python 3.8+ installed. No external third-party libraries are required (only Python standard libraries are used).
+
+Install Python 3.8 or later.
+
+No external dependencies are required.
 
 ### 2. Clone the Repository
+
 ```bash
-git clone <YOUR-GITHUB-REPO-LINK-HERE>
+git clone <YOUR-GITHUB-REPOSITORY-LINK>
 cd 3pc-simulator
+```
+
 ### 3. Run the Simulator
-Launch the interactive terminal menu by running:
+
 ```bash
 python main.py
 ```
 
-![Terminal Execution](assets/terminal_demo.png)
-*(Placeholder: Add a screenshot of your terminal running the code here)*
+
+<img width="1052" height="451" alt="image" src="https://github.com/user-attachments/assets/5743d038-7e1d-4b2e-8b04-aff37a7e3209" />
 
 ---
 
-## 🎬 Simulation Scenarios (The Proof)
+## 🎬 Simulation Scenarios
 
-Upon running `main.py`, you will be presented with an interactive menu containing 4 rigorously tested scenarios to prove the system's fault tolerance:
+The simulator contains four fault-tolerance demonstrations.
 
-* **[1] Happy Path (Successful Global Commit):** Demonstrates a flawless transaction passing through Phase 1 (Wait), Phase 2 (Pre-Commit), and Phase 3 (Commit).
-* **[2] Participant Crash (Timeout -> Global Abort):** Demonstrates the Coordinator's fault-tolerance. The `Car` node crashes early, triggering a Coordinator timeout and a safe `GLOBAL_ABORT`.
-* **[3] Network Partition - Early Crash (Termination -> Abort):** **(The Core Metric)** The Coordinator and `Hotel` are violently disconnected *before* any node enters the buffer zone. The surviving partition (`Flight` & `Car`) executes the Cooperative Termination Protocol, detects mutual "information blindness" (All `READY`), and autonomously decides to safely **ABORT**.
-* **[4] Network Partition - Late Crash (Termination -> Commit):** **(The 3PC Advantage)** The Coordinator crashes *after* moving `Flight` to `PRECOMMIT`. During peer-to-peer termination, `Car` detects `Flight`'s buffer state (The Undeniable Proof), bypassing the blocking state and autonomously deciding to **COMMIT**.
+### Scenario 1 — Happy Path
+
+* Successful distributed transaction.
+* Flow: `WAIT → PRECOMMIT → COMMIT`
+* All participants vote YES and the transaction commits successfully.
+
+### Scenario 2 — Participant Crash
+
+* The `Car` participant crashes before voting.
+* Coordinator timeout triggers `GLOBAL_ABORT`.
+* Demonstrates fault tolerance through safe transaction abortion.
+
+### Scenario 3 — Early Network Partition
+
+* Coordinator and `Hotel` become isolated before any participant reaches `PRECOMMIT`.
+* Remaining participants execute the Cooperative Termination Protocol.
+* Observed state: all surviving nodes are in `READY`.
+* Final decision: **ABORT**.
+
+This demonstrates safe autonomous recovery under uncertainty.
+
+### Scenario 4 — Late Network Partition
+
+* Coordinator crashes after moving `Flight` into `PRECOMMIT`.
+* During termination, another participant discovers a peer already in `PRECOMMIT`.
+* Observed state:
+
+  * `Flight = PRECOMMIT`
+  * `Car = READY`
+* Final decision: **COMMIT**.
+
+This demonstrates the non-blocking advantage of 3PC over 2PC.
 
 ---
 
-## 📁 System Logs (WAL)
+## 📁 Write-Ahead Logs (WAL)
 
-During execution, the system dynamically generates log files in the `logs/` directory (e.g., `COORDINATOR_log.json`, `Hotel_log.json`). These files act as the physical storage for the simulated Local Recovery Managers, demonstrating the strictly enforced Write-Ahead Logging mechanism: state transitions are forced/flushed to disk *before* any network transmission occurs.
+During execution, the simulator automatically generates log files in the `logs/` directory:
+
+```text
+logs/
+├── COORDINATOR_log.json
+├── Hotel_log.json
+├── Flight_log.json
+└── Car_log.json
+```
+
+Each state transition is flushed to persistent storage before any network transmission occurs, demonstrating the Write-Ahead Logging principle.
 
 ---
 
 ## 📚 References
 
-* **Özsu, M. T., & Valduriez, P.** - *Principles of Distributed Database Systems*. (Theoretical foundation for the 3PC State Machine, Skeen's Non-Blocking Rules, and the Cooperative Termination Protocol).
+Özsu, M. T., & Valduriez, P.
+
+*Principles of Distributed Database Systems*
+
+This project follows the theoretical foundations presented in the book, particularly:
+
+* 3-Phase Commit State Machine
+* Cooperative Termination Protocol
+* Non-Blocking Commit Rules
+* Distributed Transaction Recovery

@@ -6,9 +6,5 @@
     {
         "state": "PRECOMMIT",
         "details": "Entered safe buffer state (PRECOMMIT)"
-    },
-    {
-        "state": "COMMIT",
-        "details": "Executing COMMIT command"
     }
 ]

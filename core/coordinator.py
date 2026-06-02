@@ -33,15 +33,16 @@ class Coordinator:
         for p in self.participants:
             self.send_msg(p, msg_type)
 
-    def change_state(self, new_state: CoordState, details: str = ""):
-        sys_log("STATE", self.node_id, f"⚙️ Transitioning to {new_state.value} ({details})")
-        self.state = new_state
-        
-        # 💾 LOG WAL: Báo cáo chi tiết việc ghi ổ cứng TRƯỚC KHI làm việc khác
+    
+    def change_state(self, new_state, details: str = ""):
+        # 1. WRITE-AHEAD LOGGING TRƯỚC (WAL)
         self.logger.force_write(new_state.value, details)
-        sys_log("WAL  ", self.node_id, f"💾 Flushed to disk [{self.node_id}_log.json] -> {new_state.value}")
-        time.sleep(1.0 * SPEED)
-
+        sys_log("WAL  ", "COORDINATOR", f"💾 Flushed to disk [COORDINATOR_log.json] -> {new_state.value}")
+        
+        # 2. CẬP NHẬT RAM & IN LOG SAU (STATE)
+        sys_log("STATE", "COORDINATOR", f"⚙️ Transitioning to {new_state.value} ({details})")
+        self.state = new_state
+    
     def run(self):
         sys_log("INFO ", self.node_id, "🚀 Process initialized. Starting transaction...")
         time.sleep(2.0 * SPEED)

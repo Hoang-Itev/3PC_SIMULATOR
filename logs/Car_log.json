@@ -9,6 +9,6 @@
     },
     {
         "state": "COMMIT",
-        "details": "Executing COMMIT command"
+        "details": "Global COMMIT decided via Termination Protocol"
     }
 ]

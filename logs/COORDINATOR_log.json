@@ -6,9 +6,5 @@
     {
         "state": "PRECOMMIT",
         "details": "Entering PRECOMMIT buffer state"
-    },
-    {
-        "state": "COMMIT",
-        "details": "Executing final COMMIT"
     }
 ]

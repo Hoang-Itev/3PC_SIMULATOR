@@ -1,5 +1,7 @@
 import time
 import queue
+import json
+import os
 from datetime import datetime
 from core.states import PartState
 from core.messages import Message
@@ -25,6 +27,30 @@ class Participant:
         self.peer_states = {}
         self.is_terminating = False 
 
+    # --- HÀM MỚI: TRỰC TIẾP SỬA FILE JSON DATABASE ---
+    def update_inventory(self, action: str):
+        db_file = f"datasets/{self.node_id.lower()}_db.json"        
+        try:
+            with open(db_file, 'r') as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            return # Nếu không tìm thấy file db thì bỏ qua
+
+        if action == "LOCK" and data["available"] > 0:
+            data["available"] -= 1
+            data["locked"] += 1
+            sys_log("DB   ", self.node_id, f"🔒 KHÓA (Kho: {data['available']}, Khóa: {data['locked']})")
+        elif action == "COMMIT" and data["locked"] > 0:
+            data["locked"] -= 1
+            sys_log("DB   ", self.node_id, f"✅ XUẤT KHO (Kho: {data['available']}, Khóa: {data['locked']})")
+        elif action == "ABORT" and data["locked"] > 0:
+            data["locked"] -= 1
+            data["available"] += 1
+            sys_log("DB   ", self.node_id, f"♻️ HOÀN TRẢ (Kho: {data['available']}, Khóa: {data['locked']})")
+
+        with open(db_file, 'w') as f:
+            json.dump(data, f, indent=4)
+
     def send_msg(self, receiver: str, msg_type: str, payload=None):
         time.sleep(0.5 * SPEED)
         msg = Message(sender=self.node_id, receiver=receiver, msg_type=msg_type, payload=payload)
@@ -32,11 +58,22 @@ class Participant:
         sys_log("NET  ", self.node_id, f"📤 Sent {msg_type} -> {receiver}")
 
     def change_state(self, new_state: PartState, details: str = ""):
+        # 1. WRITE-AHEAD LOGGING: Ép ghi xuống đĩa cứng ĐẦU TIÊN!
+        self.logger.force_write(new_state.value, details)
+        sys_log("WAL  ", self.node_id, f"💾 Flushed to disk [{self.node_id}_log.json] -> {new_state.value}")
+        
+        # 2. CẬP NHẬT RAM & IN LOG TRẠNG THÁI
         sys_log("STATE", self.node_id, f"⚙️ Transitioning to {new_state.value} ({details})")
         self.state = new_state
         
-        self.logger.force_write(new_state.value, details)
-        sys_log("WAL  ", self.node_id, f"💾 Flushed to disk [{self.node_id}_log.json] -> {new_state.value}")
+        # 3. KHI LOG ĐÃ AN TOÀN: Mới bắt đầu thực thi vào Database vật lý
+        if new_state == PartState.READY:
+            self.update_inventory("LOCK")
+        elif new_state == PartState.COMMIT:
+            self.update_inventory("COMMIT")
+        elif new_state == PartState.ABORT:
+            self.update_inventory("ABORT")
+            
         time.sleep(1.0 * SPEED)
 
     def run(self):
@@ -73,8 +110,27 @@ class Participant:
 
     def process_message(self, msg: Message):
         if msg.msg_type == "PREPARE" and self.state == PartState.INITIAL:
-            self.change_state(PartState.READY, "Resources locked, VOTE_COMMIT sent")
-            self.send_msg("COORDINATOR", "VOTE_COMMIT")
+            # --- KIỂM TRA KHO TRƯỚC KHI BỎ PHIẾU (NGHIỆP VỤ THỰC TẾ) ---
+            db_file = f"datasets/{self.node_id.lower()}_db.json"
+            can_book = False
+            
+            try:
+                with open(db_file, 'r') as f:
+                    db = json.load(f)
+                    if db["available"] > 0:
+                        can_book = True
+            except FileNotFoundError:
+                pass
+            
+            # Nếu còn hàng -> Vote YES
+            if can_book:
+                self.change_state(PartState.READY, "Resources locked, VOTE_COMMIT sent")
+                self.send_msg("COORDINATOR", "VOTE_COMMIT")
+            # Nếu HẾT HÀNG -> Vote NO
+            else:
+                # Đổi ngay sang ABORT, bên trong hàm change_state sẽ lo liệu ghi WAL trước
+                self.change_state(PartState.ABORT, "Out of stock, VOTE_ABORT sent")
+                self.send_msg("COORDINATOR", "VOTE_ABORT")
 
         elif msg.msg_type == "PREPARE_TO_COMMIT" and self.state == PartState.READY:
             self.change_state(PartState.PRECOMMIT, "Entered safe buffer state (PRECOMMIT)")

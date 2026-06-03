@@ -117,7 +117,9 @@ python main.py
 ```
 
 
-<img width="1052" height="451" alt="image" src="https://github.com/user-attachments/assets/5743d038-7e1d-4b2e-8b04-aff37a7e3209" />
+<img width="1348" height="509" alt="image" src="https://github.com/user-attachments/assets/efbf6d16-389f-4400-af0e-c56803719e6f" />
+
+
 
 ---
 

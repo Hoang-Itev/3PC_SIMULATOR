@@ -2,9 +2,5 @@
     {
         "state": "READY",
         "details": "Resources locked, VOTE_COMMIT sent"
-    },
-    {
-        "state": "PRECOMMIT",
-        "details": "Entered safe buffer state (PRECOMMIT)"
     }
 ]

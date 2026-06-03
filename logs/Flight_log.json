@@ -4,11 +4,7 @@
         "details": "Resources locked, VOTE_COMMIT sent"
     },
     {
-        "state": "PRECOMMIT",
-        "details": "Entered safe buffer state (PRECOMMIT)"
-    },
-    {
-        "state": "COMMIT",
-        "details": "Global COMMIT decided via Termination Protocol"
+        "state": "ABORT",
+        "details": "Global ABORT decided via Termination Protocol"
     }
 ]

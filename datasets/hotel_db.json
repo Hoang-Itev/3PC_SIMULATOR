@@ -6,8 +6,8 @@
             "item_id": "ROOM-STD-01",
             "name": "Standard Room - 1 King Bed",
             "price": 100.0,
-            "available": 6,
-            "locked": 0
+            "available": 4,
+            "locked": 1
         },
         {
             "item_id": "ROOM-STD-02",

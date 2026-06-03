@@ -1,5 +1,146 @@
 {
-    "resource": "Hotel_Rooms",
-    "available": 10,
-    "locked": 0
+    "node_type": "Hotel_DB",
+    "last_updated": "2026-06-03T10:00:00Z",
+    "items": [
+        {
+            "item_id": "ROOM-STD-01",
+            "name": "Standard Room - 1 King Bed",
+            "price": 100.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-STD-02",
+            "name": "Standard Room - 2 Twin Beds",
+            "price": 95.0,
+            "available": 8,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-STD-03",
+            "name": "Standard Room - City View",
+            "price": 110.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-DLX-01",
+            "name": "Deluxe Room - King Bed",
+            "price": 150.0,
+            "available": 4,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-DLX-02",
+            "name": "Deluxe Room - Ocean View",
+            "price": 180.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-DLX-03",
+            "name": "Deluxe Room - Balcony",
+            "price": 170.0,
+            "available": 5,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-EXE-01",
+            "name": "Executive Room - King Bed",
+            "price": 220.0,
+            "available": 4,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-EXE-02",
+            "name": "Executive Room - Business Package",
+            "price": 240.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-FAM-01",
+            "name": "Family Room - 4 Guests",
+            "price": 250.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-FAM-02",
+            "name": "Family Suite",
+            "price": 320.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-JR-01",
+            "name": "Junior Suite",
+            "price": 280.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-JR-02",
+            "name": "Junior Suite - Sea View",
+            "price": 310.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-SUITE-01",
+            "name": "Luxury Suite",
+            "price": 400.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-SUITE-02",
+            "name": "Luxury Suite - Ocean View",
+            "price": 450.0,
+            "available": 1,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-VIP-01",
+            "name": "Royal Suite",
+            "price": 480.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-VIP-02",
+            "name": "Presidential Suite",
+            "price": 500.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-VIP-03",
+            "name": "Presidential Suite - Ocean Front",
+            "price": 550.0,
+            "available": 1,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-PENT-01",
+            "name": "Penthouse Suite",
+            "price": 700.0,
+            "available": 1,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-PENT-02",
+            "name": "Penthouse Suite - Private Pool",
+            "price": 850.0,
+            "available": 1,
+            "locked": 0
+        },
+        {
+            "item_id": "ROOM-PRES-01",
+            "name": "Chairman Suite",
+            "price": 1000.0,
+            "available": 1,
+            "locked": 0
+        }
+    ]
 }

@@ -1,6 +1,10 @@
 [
     {
         "state": "READY",
-        "details": "Resources locked, VOTE_COMMIT sent"
+        "details": "Locked ROOM-STD-01, VOTE_COMMIT sent"
+    },
+    {
+        "state": "PRECOMMIT",
+        "details": "Entered safe buffer state (PRECOMMIT)"
     }
 ]

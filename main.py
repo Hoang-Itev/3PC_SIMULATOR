@@ -8,14 +8,25 @@ from core.participant import Participant
 from core.coordinator import Coordinator
 
 def reset_databases():
-    """Chỉ gọi khi người dùng muốn Reset kho hàng bằng tay"""
+    """Tự động quét toàn bộ kho, ai bị khóa thì trả lại hàng, giữ nguyên 20 record"""
     print("\n" + "="*80)
     print("🔄 ĐANG NẠP LẠI KHO HÀNG (RESET DATABASES)...")
-    for db in ["datasets/hotel_db.json", "datasets/flight_db.json", "datasets/car_db.json"]:
-        with open(db, "w") as f:
-            r_name = "Hotel_Rooms" if "hotel" in db else ("Flight_Seats" if "flight" in db else "Car_Rentals")
-            json.dump({"resource": r_name, "available": 10, "locked": 0}, f, indent=4)
-            print(f"  ➔ Đã khôi phục {db} (Kho: 10, Khóa: 0)")
+    for db_file in ["datasets/hotel_db.json", "datasets/flight_db.json", "datasets/car_db.json"]:
+        try:
+            with open(db_file, "r") as f:
+                data = json.load(f)
+            
+            # Quét tất cả items, reset khóa và cộng lại kho
+            for item in data.get("items", []):
+                if item["locked"] > 0:
+                    item["available"] += item["locked"]
+                    item["locked"] = 0
+                    
+            with open(db_file, "w") as f:
+                json.dump(data, f, indent=4)
+            print(f"  ➔ Đã khôi phục hoàn toàn {db_file}")
+        except Exception as e:
+            print(f"  ➔ Lỗi khôi phục {db_file}: {e}")
     print("="*80 + "\n")
 
 def clear_logs():
@@ -66,10 +77,15 @@ def manual_recovery_demo():
         if os.path.exists(db_path):
             with open(db_path, "r+") as f:
                 db = json.load(f)
-                if db["locked"] > 0:
-                    if flight_state == "ABORT":
-                        db["available"] += db["locked"] # Hoàn trả phòng
-                    db["locked"] = 0 # Xóa khóa
+                
+                # --- VÒNG LẶP XỬ LÝ SCHEMA MỚI (20 RECORD) ---
+                for item in db.get("items", []):
+                    if item["locked"] > 0:
+                        if flight_state == "ABORT":
+                            item["available"] += item["locked"] # Hoàn trả phòng vì giao dịch đã bị hủy
+                        # Nếu là COMMIT thì chỉ việc xóa khóa đi (vì lúc READY đã trừ available rồi)
+                        item["locked"] = 0 
+                        
                 f.seek(0)
                 json.dump(db, f, indent=4)
                 f.truncate()

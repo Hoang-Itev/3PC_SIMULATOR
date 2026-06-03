@@ -22,11 +22,11 @@ class Coordinator:
         self.votes = {}
         self.acks = {}
 
-    def send_msg(self, receiver: str, msg_type: str):
-        msg = Message(sender=self.node_id, receiver=receiver, msg_type=msg_type)
+    def send_msg(self, receiver: str, msg_type: str, payload=None):
+        msg = Message(sender=self.node_id, receiver=receiver, msg_type=msg_type, payload=payload)
         self.network_queues[receiver].put(msg)
         # 📤 LOG MẠNG: Xác nhận tin nhắn đã rời đi
-        sys_log("NET  ", self.node_id, f"📤 Sent {msg_type} -> {receiver}")
+        sys_log("NET  ", self.node_id, f"📤 Sent {msg_type} {f'[{payload}]' if payload else ''} -> {receiver}")
         
     def broadcast(self, msg_type: str):
         time.sleep(1.5 * SPEED)
@@ -51,7 +51,16 @@ class Coordinator:
         sys_log("PHASE", self.node_id, "🚩 BẮT ĐẦU PHA 1: BROADCASTING PREPARE (Hỏi ý kiến)")
         print("="*85)
         self.change_state(CoordState.WAIT, "Waiting for votes")
-        self.broadcast("PREPARE")
+        
+        # Bắn lệnh PREPARE kèm theo ID cụ thể cho từng node
+        targets = {
+            "Hotel": "ROOM-STD-01", 
+            "Flight": "FL-VN202-ECO", 
+            "Car": "CAR-ECO-01"
+        }
+        time.sleep(1.5 * SPEED)
+        for p in self.participants:
+            self.send_msg(p, "PREPARE", payload=targets[p])
         
         try:
             deadline = time.time() + (4.0 * SPEED)

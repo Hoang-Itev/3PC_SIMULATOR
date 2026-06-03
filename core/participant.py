@@ -34,19 +34,29 @@ class Participant:
             with open(db_file, 'r') as f:
                 data = json.load(f)
         except FileNotFoundError:
-            return # Nếu không tìm thấy file db thì bỏ qua
+            return 
 
-        if action == "LOCK" and data["available"] > 0:
-            data["available"] -= 1
-            data["locked"] += 1
-            sys_log("DB   ", self.node_id, f"🔒 KHÓA (Kho: {data['available']}, Khóa: {data['locked']})")
-        elif action == "COMMIT" and data["locked"] > 0:
-            data["locked"] -= 1
-            sys_log("DB   ", self.node_id, f"✅ XUẤT KHO (Kho: {data['available']}, Khóa: {data['locked']})")
-        elif action == "ABORT" and data["locked"] > 0:
-            data["locked"] -= 1
-            data["available"] += 1
-            sys_log("DB   ", self.node_id, f"♻️ HOÀN TRẢ (Kho: {data['available']}, Khóa: {data['locked']})")
+        # Tìm đúng item_id đang giao dịch trong mảng items
+        target = None
+        if hasattr(self, 'current_item_id'):
+            for item in data.get("items", []):
+                if item["item_id"] == self.current_item_id:
+                    target = item
+                    break
+        
+        if not target: return
+
+        if action == "LOCK" and target["available"] > 0:
+            target["available"] -= 1
+            target["locked"] += 1
+            sys_log("DB   ", self.node_id, f"🔒 KHÓA [{self.current_item_id}] (Kho: {target['available']}, Khóa: {target['locked']})")
+        elif action == "COMMIT" and target["locked"] > 0:
+            target["locked"] -= 1
+            sys_log("DB   ", self.node_id, f"✅ XUẤT KHO [{self.current_item_id}] (Kho: {target['available']}, Khóa: {target['locked']})")
+        elif action == "ABORT" and target["locked"] > 0:
+            target["locked"] -= 1
+            target["available"] += 1
+            sys_log("DB   ", self.node_id, f"♻️ HOÀN TRẢ [{self.current_item_id}] (Kho: {target['available']}, Khóa: {target['locked']})")
 
         with open(db_file, 'w') as f:
             json.dump(data, f, indent=4)
@@ -110,26 +120,31 @@ class Participant:
 
     def process_message(self, msg: Message):
         if msg.msg_type == "PREPARE" and self.state == PartState.INITIAL:
-            # --- KIỂM TRA KHO TRƯỚC KHI BỎ PHIẾU (NGHIỆP VỤ THỰC TẾ) ---
+            # Ghi nhớ ID món hàng đang được Sếp yêu cầu
+            self.current_item_id = msg.payload 
+            
             db_file = f"datasets/{self.node_id.lower()}_db.json"
             can_book = False
             
             try:
                 with open(db_file, 'r') as f:
                     db = json.load(f)
-                    if db["available"] > 0:
-                        can_book = True
+                    # Vòng lặp quét mảng items để tìm đúng ID
+                    for item in db.get("items", []):
+                        if item["item_id"] == self.current_item_id:
+                            if item["available"] > 0:
+                                can_book = True
+                            break
             except FileNotFoundError:
                 pass
             
             # Nếu còn hàng -> Vote YES
             if can_book:
-                self.change_state(PartState.READY, "Resources locked, VOTE_COMMIT sent")
+                self.change_state(PartState.READY, f"Locked {self.current_item_id}, VOTE_COMMIT sent")
                 self.send_msg("COORDINATOR", "VOTE_COMMIT")
             # Nếu HẾT HÀNG -> Vote NO
             else:
-                # Đổi ngay sang ABORT, bên trong hàm change_state sẽ lo liệu ghi WAL trước
-                self.change_state(PartState.ABORT, "Out of stock, VOTE_ABORT sent")
+                self.change_state(PartState.ABORT, f"Out of stock {self.current_item_id}, VOTE_ABORT sent")
                 self.send_msg("COORDINATOR", "VOTE_ABORT")
 
         elif msg.msg_type == "PREPARE_TO_COMMIT" and self.state == PartState.READY:
@@ -165,6 +180,8 @@ class Participant:
                 self.peer_states.clear()
                 for peer in self.peers:
                     self.send_msg(peer, "REQ_STATE")
+                    
+            #bi timeout do doi participants
             else:
                 print("")
                 sys_log("ERROR", self.node_id, "Peer timeout reached. Evaluating state with available nodes...")

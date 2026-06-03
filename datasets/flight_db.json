@@ -1,5 +1,146 @@
 {
-    "resource": "Flight_Seats",
-    "available": 10,
-    "locked": 0
+    "node_type": "Flight_DB",
+    "last_updated": "2026-06-03T10:00:00Z",
+    "items": [
+        {
+            "item_id": "FL-VN202-ECO",
+            "name": "SGN to HAN - Economy",
+            "price": 120.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN202-BIZ",
+            "name": "SGN to HAN - Business",
+            "price": 300.0,
+            "available": 8,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN204-ECO",
+            "name": "SGN to HAN - Economy (Night)",
+            "price": 90.0,
+            "available": 45,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN204-BIZ",
+            "name": "SGN to HAN - Business (Night)",
+            "price": 250.0,
+            "available": 5,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VJ122-ECO",
+            "name": "SGN to HAN - Promo",
+            "price": 60.0,
+            "available": 15,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN101-ECO",
+            "name": "HAN to SGN - Economy",
+            "price": 125.0,
+            "available": 20,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN101-BIZ",
+            "name": "HAN to SGN - Business",
+            "price": 310.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN300-ECO",
+            "name": "SGN to DAD - Economy",
+            "price": 80.0,
+            "available": 25,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN300-BIZ",
+            "name": "SGN to DAD - Business",
+            "price": 200.0,
+            "available": 4,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN400-ECO",
+            "name": "SGN to PQC - Economy",
+            "price": 95.0,
+            "available": 18,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN400-BIZ",
+            "name": "SGN to PQC - Business",
+            "price": 220.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN500-ECO",
+            "name": "SGN to CXR - Economy",
+            "price": 75.0,
+            "available": 22,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN600-ECO",
+            "name": "SGN to VII - Economy",
+            "price": 65.0,
+            "available": 12,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN700-ECO",
+            "name": "SGN to HUI - Economy",
+            "price": 85.0,
+            "available": 14,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN800-ECO",
+            "name": "HAN to DAD - Economy",
+            "price": 70.0,
+            "available": 28,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN800-BIZ",
+            "name": "HAN to DAD - Business",
+            "price": 190.0,
+            "available": 5,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN900-ECO",
+            "name": "HAN to PQC - Economy",
+            "price": 110.0,
+            "available": 16,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-VN900-BIZ",
+            "name": "HAN to PQC - Business",
+            "price": 280.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-QH101-ECO",
+            "name": "SGN to HAN - Bamboo Eco",
+            "price": 105.0,
+            "available": 20,
+            "locked": 0
+        },
+        {
+            "item_id": "FL-QH101-BIZ",
+            "name": "SGN to HAN - Bamboo Biz",
+            "price": 290.0,
+            "available": 4,
+            "locked": 0
+        }
+    ]
 }

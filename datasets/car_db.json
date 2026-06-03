@@ -1,5 +1,146 @@
 {
-    "resource": "Car_Rentals",
-    "available": 10,
-    "locked": 0
+    "node_type": "Car_DB",
+    "last_updated": "2026-06-03T10:00:00Z",
+    "items": [
+        {
+            "item_id": "CAR-ECO-01",
+            "name": "Toyota Vios - 4 Seats (Economy)",
+            "price": 30.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-ECO-02",
+            "name": "Hyundai Accent - 4 Seats (Economy)",
+            "price": 28.0,
+            "available": 8,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-ECO-03",
+            "name": "Honda City - 4 Seats (Economy)",
+            "price": 32.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-STD-01",
+            "name": "Toyota Camry - 4 Seats (Standard)",
+            "price": 50.0,
+            "available": 5,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-STD-02",
+            "name": "Honda Accord - 4 Seats (Standard)",
+            "price": 55.0,
+            "available": 4,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-STD-03",
+            "name": "Mazda 6 - 4 Seats (Standard)",
+            "price": 52.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-SUV-01",
+            "name": "Toyota Fortuner - 7 Seats (SUV)",
+            "price": 65.0,
+            "available": 7,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-SUV-02",
+            "name": "Ford Everest - 7 Seats (SUV)",
+            "price": 70.0,
+            "available": 5,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-SUV-03",
+            "name": "Hyundai Santa Fe - 7 Seats (SUV)",
+            "price": 68.0,
+            "available": 6,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-SUV-04",
+            "name": "Honda CR-V - 5+2 Seats (SUV)",
+            "price": 60.0,
+            "available": 8,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-VAN-01",
+            "name": "Ford Transit - 16 Seats (Van)",
+            "price": 80.0,
+            "available": 4,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-VAN-02",
+            "name": "Hyundai Solati - 16 Seats (Van)",
+            "price": 85.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-LUX-01",
+            "name": "Mercedes-Benz E300 - Luxury",
+            "price": 120.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-LUX-02",
+            "name": "BMW 530i - Luxury",
+            "price": 125.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-LUX-03",
+            "name": "Audi A6 - Luxury",
+            "price": 115.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-VIP-01",
+            "name": "Mercedes-Benz S450 - VIP",
+            "price": 250.0,
+            "available": 1,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-VIP-02",
+            "name": "Lexus LS500 - VIP",
+            "price": 270.0,
+            "available": 1,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-LIM-01",
+            "name": "Kia Carnival - 9 Seats Limousine",
+            "price": 150.0,
+            "available": 3,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-LIM-02",
+            "name": "DCar Limousine - 9 Seats",
+            "price": 180.0,
+            "available": 2,
+            "locked": 0
+        },
+        {
+            "item_id": "CAR-EXC-01",
+            "name": "Porsche Panamera - Exotic",
+            "price": 400.0,
+            "available": 1,
+            "locked": 0
+        }
+    ]
 }

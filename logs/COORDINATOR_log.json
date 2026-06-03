@@ -2,5 +2,9 @@
     {
         "state": "WAIT",
         "details": "Waiting for votes"
+    },
+    {
+        "state": "PRECOMMIT",
+        "details": "Entering PRECOMMIT buffer state"
     }
 ]
